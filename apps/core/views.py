@@ -1,3 +1,19 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
 
-# Create your views here.
+from apps.core.models import Brand, Car, Color
+from apps.core.serializers import BrandSerializer, CarSerializer, ColorSerializer
+
+
+class ColorViewSet(ModelViewSet):
+    queryset = Color.objects.all()
+    serializer_class = ColorSerializer
+
+
+class BrandViewSet(ModelViewSet):
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
+
+
+class CarViewSet(ModelViewSet):
+    queryset = Car.objects.all()
+    serializer_class = CarSerializer
