@@ -84,6 +84,5 @@ def test_crud_cars(api_client):
     Car.objects.create(name="Запорожец", brand_id=brand.id, color_id=color.id)
     response = api_client.get(CAR_URL)
     assert response.status_code == HTTP_200_OK
-    print(response.data)
     assert len(response.data) == 1
     assert response.data[0].get("name") == "Запорожец"

@@ -15,3 +15,6 @@ class Order(models.Model):
 
     def __str__(self):
         return f"{self.id} - {self.car}, количество {self.quantity}, {self.date}"
+
+    class Meta:
+        ordering = ['-id']

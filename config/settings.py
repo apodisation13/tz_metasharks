@@ -186,3 +186,5 @@ SWAGGER_SETTINGS = {
     'LOGOUT_URL': '/admin/logout/',
     'DEFAULT_INFO': 'config.api_docs.openapi_info',
 }
+
+ORDERS_PER_PAGE = 3

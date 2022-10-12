@@ -3,6 +3,7 @@ from model_bakery import baker
 from rest_framework.test import APIClient
 
 from apps.core.models import Brand, Car, Color
+from apps.orders.models import Order
 
 
 @pytest.fixture
@@ -29,3 +30,10 @@ def create_cars():
     def car_factory(*args, **kwargs):
         return baker.make(Car, *args, **kwargs)
     return car_factory
+
+
+@pytest.fixture
+def create_orders():
+    def order_factory(*args, **kwargs):
+        return baker.make(Order, *args, **kwargs)
+    return order_factory
