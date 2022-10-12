@@ -19,9 +19,17 @@ class BrandSerializer(serializers.ModelSerializer):
 
 class CarSerializer(serializers.ModelSerializer):
     """Сериализатор для модели цвета машин, отдает id, name (название машины), её цвет color и марку brand"""
-    color = ColorSerializer(many=False)
-    brand = BrandSerializer(many=False)
+    # color = ColorSerializer(many=False)
+    # brand = BrandSerializer(many=False)
+    color = serializers.CharField(source="color.name")
+    brand = serializers.CharField(source="brand.name")
 
     class Meta:
-        fields = ("id", "name", "brand", "color")
+        fields = ("id", "name", "color", "brand")
         model = Car
+
+    def create(self, validated_data):
+        print(validated_data)
+        color = Color.objects.filter(name=validated_data.pop("color")["name"]).first()
+        brand = Brand.objects.filter(name=validated_data.pop("brand")["name"]).first()
+        return Car.objects.create(**validated_data, color_id=color.id, brand_id=brand.id)
