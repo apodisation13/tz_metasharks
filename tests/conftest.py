@@ -2,7 +2,7 @@ import pytest
 from model_bakery import baker
 from rest_framework.test import APIClient
 
-from apps.core.models import Color, Brand, Car
+from apps.core.models import Brand, Car, Color
 
 
 @pytest.fixture

@@ -1,7 +1,7 @@
 import pytest
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
-from apps.core.models import Car, Brand, Color
+from apps.core.models import Brand, Car, Color
 
 QUANTITY = 10
 COLOR_URL = "/api/v1/colors/"
