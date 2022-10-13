@@ -1,0 +1,43 @@
+version: "3"
+
+
+volumes:
+  pgdata:
+
+
+services:
+  postgresdb:
+    image: postgres:alpine
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+    command: -p 5435
+
+
+  backend:
+    image: tz_metasharks_backend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/tz_metasharks
+    depends_on:
+      - postgresdb
+    ports:
+      - "8000:8000"
+
+  nginx:
+    restart: unless-stopped
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "83:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./static/:/static
