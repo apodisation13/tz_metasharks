@@ -1,5 +1,5 @@
 import datetime
-from random import randint
+from random import choice, randint
 
 import pytest
 from django.conf import settings
@@ -61,3 +61,37 @@ def test_crud_orders(api_client, create_orders):
     response = api_client.get(ORDER_URL)
     assert response.status_code == HTTP_200_OK
     assert response.data["count"] == len(orders) - 1
+
+
+@pytest.mark.django_db
+def test_ordering_by_quantity(api_client):
+    brand = Brand.objects.create(name="AUDI")
+    color = Color.objects.create(name="Зеленый")
+    car = Car.objects.create(name="Запорожец", brand_id=brand.id, color_id=color.id)
+    for i in range(QUANTITY):
+        quantity = randint(1, QUANTITY)
+        Order.objects.create(car=car, quantity=quantity)
+    response = api_client.get(f"{ORDER_URL}?ordering=-quantity")
+    assert response.status_code == HTTP_200_OK
+    results = response.data["results"]
+    assert len(results) == settings.ORDERS_PER_PAGE
+    assert response.data["count"] == QUANTITY
+    for i in range(1, len(results)):
+        assert results[i]["quantity"] <= results[i - 1]["quantity"]
+
+
+@pytest.mark.django_db
+def test_filtering_by_brand(api_client):
+    brand_1 = Brand.objects.create(name="Audi")
+    brand_2 = Brand.objects.create(name="Ford")
+    color = Color.objects.create(name="Зеленый")
+    car_1 = Car.objects.create(name="Запорожец", color_id=color.id, brand_id=brand_1.id)
+    car_2 = Car.objects.create(name="Запорожец", color_id=color.id, brand_id=brand_2.id)
+    for i in range(QUANTITY):
+        Order.objects.create(quantity=QUANTITY, car=choice([car_1, car_2]))
+    desired_brand = "Ford"
+    response = api_client.get(f"{ORDER_URL}?car_brand={desired_brand}")
+    assert response.status_code == HTTP_200_OK
+    results = response.data["results"]
+    for i in range(len(results)):
+        assert results[i]["brand"] == desired_brand
