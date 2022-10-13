@@ -10,6 +10,8 @@ from apps.orders.models import Order
 
 QUANTITY = 10
 ORDER_URL = "/api/v1/orders/"
+ORDERS_BY_COLOR_URL = "/api/v1/orders_by_color/"
+ORDERS_BY_BRAND_URL = "/api/v1/orders_by_brand/"
 DATE = "2022-10-12T14:39:14.554Z"
 
 
@@ -95,3 +97,47 @@ def test_filtering_by_brand(api_client):
     results = response.data["results"]
     for i in range(len(results)):
         assert results[i]["brand"] == desired_brand
+
+
+@pytest.mark.django_db
+def test_orders_by_color(api_client):
+    color_1 = Color.objects.create(name="Зеленый")
+    color_2 = Color.objects.create(name="Красный")
+    brand = Brand.objects.create(name="AUDI")
+    car_1 = Car.objects.create(name="Запорожец", color_id=color_1.id, brand_id=brand.id)
+    car_2 = Car.objects.create(name="Запорожец", color_id=color_2.id, brand_id=brand.id)
+    random_1 = randint(1, QUANTITY)
+    random_2 = randint(1, QUANTITY)
+    for i in range(random_1):
+        Order.objects.create(quantity=QUANTITY, car=car_1)
+    for i in range(random_2):
+        Order.objects.create(quantity=QUANTITY, car=car_2)
+    response = api_client.get(ORDERS_BY_COLOR_URL)
+    assert response.status_code == HTTP_200_OK
+    assert len(response.data) == 2
+    assert response.data[0]["name"] == "Зеленый"
+    assert response.data[0]["orders"] == random_1
+    assert response.data[1]["name"] == "Красный"
+    assert response.data[1]["orders"] == random_2
+
+
+@pytest.mark.django_db
+def test_orders_by_brand(api_client):
+    color = Color.objects.create(name="Зеленый")
+    brand_1 = Brand.objects.create(name="Audi")
+    brand_2 = Brand.objects.create(name="Ford")
+    car_1 = Car.objects.create(name="Запорожец", color_id=color.id, brand_id=brand_1.id)
+    car_2 = Car.objects.create(name="Запорожец", color_id=color.id, brand_id=brand_2.id)
+    random_1 = randint(1, QUANTITY)
+    random_2 = randint(1, QUANTITY)
+    for i in range(random_1):
+        Order.objects.create(quantity=QUANTITY, car=car_1)
+    for i in range(random_2):
+        Order.objects.create(quantity=QUANTITY, car=car_2)
+    response = api_client.get(ORDERS_BY_BRAND_URL)
+    assert response.status_code == HTTP_200_OK
+    assert len(response.data) == 2
+    assert response.data[0]["name"] == "Audi"
+    assert response.data[0]["orders"] == random_1
+    assert response.data[1]["name"] == "Ford"
+    assert response.data[1]["orders"] == random_2
