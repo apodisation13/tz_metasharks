@@ -1,3 +1,6 @@
+# from django.db import connection
+# from rest_framework.response import Response
+# from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from apps.core.models import Brand, Color
@@ -38,3 +41,19 @@ class OrderByBrandViewSet(ReadOnlyModelViewSet):
     """
     queryset = Brand.objects.all()
     serializer_class = OrderByBrandSerializer
+
+
+# второй способ: за один запрос)
+# class OrderByColor(APIView):
+#
+#     def get(self, request):
+#         with connection.cursor() as cursor:
+#             cursor.execute('''
+#             SELECT colors.name, count(orders.id) as count
+#             FROM core_color as colors
+#             LEFT JOIN core_car as cars on cars.color_id = colors.id
+#             LEFT JOIN orders_order as orders ON cars.id = orders.car_id
+#             GROUP BY colors.id;
+#             ''')
+#             data = cursor.fetchall()
+#         return Response(data)

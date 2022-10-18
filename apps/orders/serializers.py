@@ -30,8 +30,7 @@ class OrderByColorSerializer(serializers.ModelSerializer):
         model = Color
 
     def get_orders(self, color):
-        orders = Order.objects.filter(car__color__name=color.name).all()
-        return len(orders)
+        return Order.objects.filter(car__color__name=color.name).count()
 
 
 class OrderByBrandSerializer(serializers.ModelSerializer):
@@ -43,5 +42,4 @@ class OrderByBrandSerializer(serializers.ModelSerializer):
         model = Brand
 
     def get_orders(self, brand):
-        orders = Order.objects.filter(car__brand__name=brand.name).all()
-        return len(orders)
+        return Order.objects.filter(car__brand__name=brand.name).count()

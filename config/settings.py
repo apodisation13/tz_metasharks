@@ -165,17 +165,17 @@ REST_FRAMEWORK = {
         'rest_framework.filters.SearchFilter',  # вот здесь импорт делать из рест-фреймворк, а не из джанго-филтер
         'rest_framework.filters.OrderingFilter',  # и здесь тоже
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-    ],
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+    #     'rest_framework.authentication.BasicAuthentication',
+    #     'rest_framework.authentication.SessionAuthentication',
+    #     'rest_framework.authentication.TokenAuthentication',
+    # ],
     # 'DEFAULT_PERMISSION_CLASSES': [
     #     'rest_framework.permissions.IsAuthenticated',
     #     'rest_framework.permissions.IsAdminUser',
     # ],
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    # 'PAGE_SIZE': 20,  # количество элементов на одной странице для пагинации
+    # 'PAGE_SIZE': 10,  # количество элементов на одной странице для пагинации
 }
 
 USE_X_FORWARDED_HOST = True
@@ -187,4 +187,5 @@ SWAGGER_SETTINGS = {
     'DEFAULT_INFO': 'config.api_docs.openapi_info',
 }
 
-ORDERS_PER_PAGE = 3
+# количество заказов на одной странице (Пагинация)
+ORDERS_PER_PAGE = 10

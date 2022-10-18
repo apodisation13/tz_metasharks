@@ -27,5 +27,5 @@ class CarViewSet(ModelViewSet):
     Эндпоинт машин: название машины, название цвета машины, название марки машины
     Роут /api/v1/cars/
     """
-    queryset = Car.objects.all()
+    queryset = Car.objects.select_related("color", "brand").all()
     serializer_class = CarSerializer
